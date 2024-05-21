@@ -1,2 +1,2 @@
 # URL_Shortener
-Project for ulr shotener service
+Project for ulr shortener service
