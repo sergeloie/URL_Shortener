@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 public class TestUrlshortenerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.from(UrlshortenerApplication::main).with(TestUrlshortenerApplication.class).run(args);
+		SpringApplication.from(UrlShortenerApplication::main).with(TestUrlshortenerApplication.class).run(args);
 	}
 
 }
