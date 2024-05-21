@@ -1,0 +1,92 @@
+[versions]
+h2-version = "2.2.224"
+junit-plarform-version = "1.10.2"
+junit-version = "5.10.2"
+lombok-version = "1.18.32"
+postgresql-version = "42.7.3"
+spring-version = "3.2.5"
+spring-security-starter-version = "6.2.3"
+jakarta-version = "3.1.0"
+mapstruct-version = "1.5.5.Final"
+nullable-version = "0.2.6"
+datafaker-version = "2.0.2"
+instancio-version = "3.6.0"
+swagger-version = "2.5.0"
+testcontainers-version = "1.19.8"
+
+
+[libraries]
+h2 = { module = "com.h2database:h2", version.ref = "h2-version" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-plarform-version" }
+junitBom = { module = "org.junit:junit-bom", version.ref = "junit-version" }
+jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-version" }
+testcontainers-junit = {module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers-version"}
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok-version" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql-version" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-version" }
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-version" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-version" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-version" }
+spring-boot-starter-data-jpa = {module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-version"}
+spring-boot-starter-validation = {module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-version"}
+spring-boot-starter-thymeleaf = {module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-version"}
+spring-boot-starter-security = {module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-version"}
+spring-boot-starter-oauth2-resource-server = {module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server", version.ref = "spring-version"}
+spring-security-test = {module = "org.springframework.security:spring-security-test", version.ref = "spring-security-starter-version"}
+spring-boot-testcontainers = {module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-version"}
+swagger = {module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "swagger-version"}
+jakarta-persistence-api = {module = "jakarta.persistence:jakarta.persistence-api", version.ref = "jakarta-version"}
+mapstruct = {module = "org.mapstruct:mapstruct", version.ref = "mapstruct-version"}
+mapstruct-annotation-processor = {module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct-version"}
+jackson-databind-nullable = {module = "org.openapitools:jackson-databind-nullable", version.ref = "nullable-version"}
+datafaker = {module = "net.datafaker:datafaker", version.ref = "datafaker-version"}
+instancio = {module = "org.instancio:instancio-junit", version.ref = "instancio-version"}
+
+[bundles]
+junitBundle = [
+    "junit-platform-launcher",
+    "jupiter",
+]
+springBundle = [
+    "spring-boot-devtools",
+    "spring-boot-starter",
+    "spring-boot-starter-test",
+    "spring-boot-starter-web",
+]
+springStudy = [
+    "spring-boot-devtools",
+    "spring-boot-starter",
+    "spring-boot-starter-web",
+    "spring-boot-starter-data-jpa",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-security",
+    "spring-boot-starter-oauth2-resource-server",
+    "swagger",
+]
+springTest = [
+    "spring-boot-starter-test",
+    "spring-security-test",
+    "spring-boot-testcontainers",
+    "testcontainers-junit",
+]
+
+springUrlShortener = [
+    "spring-boot-devtools",
+    "spring-boot-starter",
+    "spring-boot-starter-web",
+    "spring-boot-starter-data-jpa",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-thymeleaf",
+    "swagger",
+]
+
+[plugins]
+benManesVersionsPlugin = "com.github.ben-manes.versions:0.51.0"
+freefairLombokPLugin = "io.freefair.lombok:8.6"
+johnrengelmanShadowPlugin = "com.github.johnrengelman.shadow:8.1.1"
+littlerobotsVersionCatalogUpdatePlugin = "nl.littlerobots.version-catalog-update:0.8.4"
+patrikerdesUseLatestVersionsPlugin = "se.patrikerdes.use-latest-versions:0.2.18"
+springDependencyManagementPlugin = "io.spring.dependency-management:1.1.4"
+springFrameworkPlugin = { id = "org.springframework.boot", version.ref = "spring-version" }
+sonarCubePlugin = "org.sonarqube:4.4.1.3373"
+sentryPlugin = "io.sentry.jvm.gradle:4.5.1"
