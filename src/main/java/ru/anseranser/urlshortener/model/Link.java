@@ -6,6 +6,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,9 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "links")
+@Table(name = "links", indexes = {
+        @Index(name = "idx_link_short_link_unq", columnList = "short_link", unique = true)
+})
 public class Link {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
