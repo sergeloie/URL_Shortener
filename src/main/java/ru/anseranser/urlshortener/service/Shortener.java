@@ -12,7 +12,7 @@ public class Shortener {
     public String makeShort(String url) {
         Sqids sqids = Sqids.builder()
                 .build();
-            return sqids.encode(prepareToHash(url)).substring(0, 8);
+        return sqids.encode(prepareToHash(url)).substring(0, 8);
     }
 
     public List<Long> prepareToHash(String url) {

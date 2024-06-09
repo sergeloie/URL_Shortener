@@ -37,5 +37,6 @@ public class Link {
     private String sourceLink;
 
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDate createdAt;
 }
