@@ -8,14 +8,10 @@ import ru.anseranser.urlshortener.utils.RandomStringGenerator;
 @SpringBootApplication
 public class UrlShortenerApplication {
 
+
+
     public static void main(String[] args) {
 
         SpringApplication.run(UrlShortenerApplication.class, args);
     }
-
-    @Bean
-    public RandomStringGenerator getRandomStringGenerator() {
-        return new RandomStringGenerator();
-    }
-
 }
