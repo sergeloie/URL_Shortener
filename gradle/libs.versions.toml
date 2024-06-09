@@ -13,6 +13,8 @@ datafaker-version = "2.0.2"
 instancio-version = "3.6.0"
 swagger-version = "2.5.0"
 testcontainers-version = "1.19.8"
+sqids-version = "0.1.0"
+apache-commons-version = "3.14.0"
 
 
 [libraries]
@@ -41,6 +43,8 @@ mapstruct-annotation-processor = {module = "org.mapstruct:mapstruct-processor", 
 jackson-databind-nullable = {module = "org.openapitools:jackson-databind-nullable", version.ref = "nullable-version"}
 datafaker = {module = "net.datafaker:datafaker", version.ref = "datafaker-version"}
 instancio = {module = "org.instancio:instancio-junit", version.ref = "instancio-version"}
+sqids = {module = "org.sqids:sqids", version.ref = "sqids-version"}
+apache-commons = {module = "org.apache.commons:commons-lang3", version.ref = "apache-commons-version"}
 
 [bundles]
 junitBundle = [

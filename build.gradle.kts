@@ -51,6 +51,9 @@ dependencies {
 	implementation(libs.instancio)
 	implementation(libs.postgresql)
 
+	implementation(libs.sqids)
+	implementation(libs.apache.commons)
+
 //	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 //	implementation("org.springframework.boot:spring-boot-starter-web")
