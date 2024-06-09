@@ -1,6 +1,9 @@
 package ru.anseranser.urlshortener.dto.link;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import org.hibernate.validator.constraints.URL;
 import ru.anseranser.urlshortener.model.Link;
@@ -12,7 +15,12 @@ import java.io.Serializable;
  */
 @Value
 public class LinkCreateDto implements Serializable {
-    @URL
+    @URL(message = "Not valid URL format")
     @JsonProperty("original")
     String sourceLink;
+
+    @JsonCreator
+    public LinkCreateDto(String sourceLink) {
+        this.sourceLink = sourceLink;
+    }
 }
