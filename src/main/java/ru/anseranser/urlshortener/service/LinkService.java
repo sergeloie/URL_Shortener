@@ -2,7 +2,10 @@ package ru.anseranser.urlshortener.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
 import ru.anseranser.urlshortener.mapper.LinkMapper;
@@ -30,5 +33,12 @@ public class LinkService {
         link.setShortLink(shortLink);
         linkRepository.save(link);
         return linkMapper.toDto(link);
+    }
+
+    public String redirect(String shortlink) {
+        Link link = linkRepository.findByShortLink(shortlink)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortlink)));
+        return link.getSourceLink();
     }
 }

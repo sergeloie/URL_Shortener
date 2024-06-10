@@ -105,9 +105,6 @@ public class LinkResource {
 
     @GetMapping("/l/{shortlink}")
     public RedirectView redirect(@PathVariable String shortlink) {
-        Link link = linkRepository.findByShortLink(shortlink)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortlink)));
-        return new RedirectView(link.getSourceLink());
+        return new RedirectView(linkService.redirect(shortlink));
     }
 }
