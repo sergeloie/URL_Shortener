@@ -75,7 +75,6 @@ springTest = [
 ]
 
 springUrlShortener = [
-    "spring-boot-devtools",
     "spring-boot-starter",
     "spring-boot-starter-web",
     "spring-boot-starter-data-jpa",
