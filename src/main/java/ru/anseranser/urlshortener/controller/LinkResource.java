@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
 import ru.anseranser.urlshortener.mapper.LinkMapper;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/rest/admin-ui/links")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class LinkResource {
 
@@ -56,11 +57,6 @@ public class LinkResource {
     @GetMapping("/by-ids")
     public List<Link> getMany(@RequestParam List<Long> ids) {
         return linkRepository.findAllById(ids);
-    }
-
-    @PostMapping
-    public LinkDto create(@RequestBody @Valid LinkCreateDto linkCreateDto) {
-        return linkService.create(linkCreateDto);
     }
 
     @PatchMapping("/{id}")
@@ -100,5 +96,18 @@ public class LinkResource {
     @DeleteMapping
     public void deleteMany(@RequestParam List<Long> ids) {
         linkRepository.deleteAllById(ids);
+    }
+
+    @PostMapping("/generate")
+    public LinkDto create(@RequestBody @Valid LinkCreateDto linkCreateDto) {
+        return linkService.create(linkCreateDto);
+    }
+
+    @GetMapping("/l/{shortlink}")
+    public RedirectView redirect(@PathVariable String shortlink) {
+        Link link = linkRepository.findByShortLink(shortlink)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortlink)));
+        return new RedirectView(link.getSourceLink());
     }
 }
