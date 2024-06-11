@@ -2,6 +2,7 @@ package ru.anseranser.urlshortener.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,9 +21,13 @@ public class LinkService {
     @Value("${short.link.size}")
     private int shortLinkSize;
 
+    @Value("${short.link.cache.ttl.ms}")
+    private int shortLinkCacheTtlMs;
+
     private final RandomStringGenerator randomStringGenerator;
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
+    private final StringRedisTemplate stringRedisTemplate;
 
     public LinkDto create(LinkCreateDto linkCreateDto) {
         String shortLink;
@@ -36,9 +41,20 @@ public class LinkService {
     }
 
     public String redirect(String shortlink) {
+        String sourceLink = stringRedisTemplate.opsForValue().get(shortlink);
+        if (sourceLink != null) {
+            stringRedisTemplate.opsForZSet().incrementScore("topshort", shortlink, 1);
+            return sourceLink;
+        }
         Link link = linkRepository.findByShortLink(shortlink)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortlink)));
+        saveShortLinkToCash(link);
         return link.getSourceLink();
+    }
+
+    public void saveShortLinkToCash(Link link) {
+        stringRedisTemplate.opsForValue().set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs);
+        stringRedisTemplate.opsForZSet().incrementScore("topshort", link.getShortLink(), 1);
     }
 }
