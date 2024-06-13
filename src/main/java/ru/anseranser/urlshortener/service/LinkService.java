@@ -14,6 +14,8 @@ import ru.anseranser.urlshortener.model.Link;
 import ru.anseranser.urlshortener.repository.LinkRepository;
 import ru.anseranser.urlshortener.utils.RandomStringGenerator;
 
+import java.util.concurrent.TimeUnit;
+
 @RequiredArgsConstructor
 @Service
 public class LinkService {
@@ -54,7 +56,7 @@ public class LinkService {
     }
 
     public void saveShortLinkToCash(Link link) {
-        stringRedisTemplate.opsForValue().set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs);
+        stringRedisTemplate.opsForValue().set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs, TimeUnit.MILLISECONDS);
         stringRedisTemplate.opsForZSet().incrementScore("topshort", link.getShortLink(), 1);
     }
 }
