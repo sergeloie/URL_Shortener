@@ -4,6 +4,7 @@ import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Value;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
 import ru.anseranser.urlshortener.model.Link;
@@ -12,6 +13,7 @@ import ru.anseranser.urlshortener.model.Link;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING)
 public interface LinkMapper {
+
     Link toEntity(LinkCreateDto linkCreateDto);
 
     LinkDto toDto(Link link);

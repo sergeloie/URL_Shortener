@@ -8,10 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
+import ru.anseranser.urlshortener.dto.link.LinkScoreDto;
 import ru.anseranser.urlshortener.mapper.LinkMapper;
 import ru.anseranser.urlshortener.model.Link;
 import ru.anseranser.urlshortener.repository.LinkRepository;
 import ru.anseranser.urlshortener.utils.RandomStringGenerator;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -52,6 +55,20 @@ public class LinkService {
         redisService.saveLinkToCash(link);
         redisService.incrementShortLinkRating(link.getShortLink());
         return link.getSourceLink();
+    }
+
+    public LinkScoreDto getLinkFromTop(String shortLink) {
+        LinkScoreDto linkScoreDto = redisService.getLinkFromTop(shortLink);
+        linkScoreDto.setShortLink("/l/" + linkScoreDto.getShortLink());
+        return linkScoreDto;
+    }
+
+    public List<LinkScoreDto> getLinksFromTop(long page, long count) {
+        List<LinkScoreDto> linkScoreDtos = redisService.getLinksFromTop(page, count);
+        for (LinkScoreDto linkScoreDto : linkScoreDtos) {
+            linkScoreDto.setShortLink("/l/" + linkScoreDto.getShortLink());
+        }
+        return linkScoreDtos;
     }
 
 }

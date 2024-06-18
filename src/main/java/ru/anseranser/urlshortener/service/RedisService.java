@@ -21,6 +21,8 @@ public class RedisService {
     private final LinkRepository linkRepository;
     @Value("${short.link.cache.ttl.ms}")
     private int shortLinkCacheTtlMs;
+    @Value("${short.link.top.name}")
+    private String topShort;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -33,23 +35,32 @@ public class RedisService {
     public void incrementShortLinkRating(String shortLink) {
         stringRedisTemplate
                 .opsForZSet()
-                .incrementScore("topshort", shortLink, 1);
+                .incrementScore(topShort, shortLink, 1);
     }
 
-    public LinkScoreDto getLinkFromTop(Link link) {
+    public LinkScoreDto getLinkFromTop(String shortLink) {
         long rank = stringRedisTemplate
                 .opsForZSet()
-                .rank("topshort", link.getShortLink());
+                .rank(topShort, shortLink);
         double score = stringRedisTemplate
                 .opsForZSet()
-                .score("topshort", link.getShortLink());
-        return new LinkScoreDto(link.getShortLink(), link.getSourceLink(), rank, score);
+                .score(topShort, shortLink);
+        return new LinkScoreDto(shortLink, linkRepository.findSourceLinkByShortLink(shortLink), rank, score);
     }
 
     public List<LinkScoreDto> getLinksFromTop(long page, long count) {
-        Set<ZSetOperations.TypedTuple<String>> result = stringRedisTemplate
+        Set<ZSetOperations.TypedTuple<String>> tupleSet = stringRedisTemplate
                 .opsForZSet()
-                .rangeWithScores("topshot", count * (page - 1), count * page - 1);
-        return new ArrayList<>();
+                .rangeWithScores(topShort, count * (page - 1), count * page - 1);
+        List<LinkScoreDto> result = new ArrayList<>();
+        for (var tuple : tupleSet) {
+            String shortLink = tuple.getValue();
+            String sourceLink = linkRepository.findSourceLinkByShortLink(shortLink);
+            double score = tuple.getScore();
+            long rank = stringRedisTemplate.opsForZSet().rank(topShort, shortLink);
+            LinkScoreDto linkScoreDto = new LinkScoreDto(shortLink, sourceLink,rank, score);
+            result.add(linkScoreDto);
+        }
+        return result;
     }
 }

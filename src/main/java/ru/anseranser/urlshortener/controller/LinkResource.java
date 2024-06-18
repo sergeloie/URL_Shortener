@@ -82,4 +82,6 @@ public class LinkResource {
     public RedirectView redirect(@PathVariable String shortlink) {
         return new RedirectView(linkService.redirect(shortlink));
     }
+
+
 }
