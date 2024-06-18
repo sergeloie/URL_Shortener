@@ -30,10 +30,10 @@ public class RedisService {
                 .set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs, TimeUnit.MILLISECONDS);
     }
 
-    public void saveLinkToTop(Link link) {
+    public void incrementShortLinkRating(String shortLink) {
         stringRedisTemplate
                 .opsForZSet()
-                .incrementScore("topshort", link.getShortLink(), 1);
+                .incrementScore("topshort", shortLink, 1);
     }
 
     public LinkScoreDto getLinkFromTop(Link link) {
@@ -49,7 +49,6 @@ public class RedisService {
     public List<LinkScoreDto> getLinksFromTop(long page, long count) {
         Set<ZSetOperations.TypedTuple<String>> result = stringRedisTemplate
                 .opsForZSet()
-
                 .rangeWithScores("topshot", count * (page - 1), count * page - 1);
         return new ArrayList<>();
     }

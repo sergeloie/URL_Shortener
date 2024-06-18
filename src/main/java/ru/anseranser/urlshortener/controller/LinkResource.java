@@ -59,31 +59,6 @@ public class LinkResource {
         return linkRepository.findAllById(ids);
     }
 
-    @PatchMapping("/{id}")
-    public Link patch(@PathVariable Long id, @RequestBody JsonNode patchNode) throws IOException {
-        Link link = linkRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
-
-        objectMapper.readerForUpdating(link).readValue(patchNode);
-
-        return linkRepository.save(link);
-    }
-
-    @PatchMapping
-    public List<Long> patchMany(@RequestParam List<Long> ids, @RequestBody JsonNode patchNode) throws IOException {
-        Collection<Link> links = linkRepository.findAllById(ids);
-
-        for (Link link : links) {
-            objectMapper.readerForUpdating(link).readValue(patchNode);
-        }
-
-        List<Link> resultLinks = linkRepository.saveAll(links);
-        List<Long> ids1 = resultLinks.stream()
-                .map(Link::getId)
-                .toList();
-        return ids1;
-    }
-
     @DeleteMapping("/{id}")
     public Link delete(@PathVariable Long id) {
         Link link = linkRepository.findById(id).orElse(null);

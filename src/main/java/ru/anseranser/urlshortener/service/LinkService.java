@@ -6,15 +6,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.view.RedirectView;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
 import ru.anseranser.urlshortener.mapper.LinkMapper;
 import ru.anseranser.urlshortener.model.Link;
 import ru.anseranser.urlshortener.repository.LinkRepository;
 import ru.anseranser.urlshortener.utils.RandomStringGenerator;
-
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +27,7 @@ public class LinkService {
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final RedisService redisService;
 
     public LinkDto create(LinkCreateDto linkCreateDto) {
         String shortLink;
@@ -42,21 +40,18 @@ public class LinkService {
         return linkMapper.toDto(link);
     }
 
-    public String redirect(String shortlink) {
-        String sourceLink = stringRedisTemplate.opsForValue().get(shortlink);
+    public String redirect(String shortLink) {
+        String sourceLink = stringRedisTemplate.opsForValue().get(shortLink);
         if (sourceLink != null) {
-            stringRedisTemplate.opsForZSet().incrementScore("topshort", shortlink, 1);
+            redisService.incrementShortLinkRating(shortLink);
             return sourceLink;
         }
-        Link link = linkRepository.findByShortLink(shortlink)
+        Link link = linkRepository.findByShortLink(shortLink)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortlink)));
-        saveShortLinkToCash(link);
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Shortlink with id `%s` not found".formatted(shortLink)));
+        redisService.saveLinkToCash(link);
+        redisService.incrementShortLinkRating(link.getShortLink());
         return link.getSourceLink();
     }
 
-    public void saveShortLinkToCash(Link link) {
-        stringRedisTemplate.opsForValue().set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs, TimeUnit.MILLISECONDS);
-        stringRedisTemplate.opsForZSet().incrementScore("topshort", link.getShortLink(), 1);
-    }
 }
