@@ -1,2 +1,3 @@
 # URL_Shortener
-Project for ulr shortener service
+Бэкенд сервиса для сокращения ссылок
+Java 21, Spring Boot, Amplicode, PostgreSQL, Redis, Docker, Docker Compose
