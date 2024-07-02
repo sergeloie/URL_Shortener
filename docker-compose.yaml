@@ -26,5 +26,25 @@ services:
       retries: 5
     labels:
       amplicode.image: redis
+  postgres:
+    image: postgres:16.3
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secret
+      POSTGRES_DB: urlshortener
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    profiles:
+      - prod
 volumes:
   redis_data:
+  postgres_data:
