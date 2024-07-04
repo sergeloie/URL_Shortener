@@ -32,6 +32,10 @@ public class RedisService {
                 .set(link.getShortLink(), link.getSourceLink(), shortLinkCacheTtlMs, TimeUnit.MILLISECONDS);
     }
 
+    public String getLinkFromCash(String shortlink) {
+        return stringRedisTemplate.opsForValue().get(shortlink);
+    }
+
     public void incrementShortLinkRating(String shortLink) {
         stringRedisTemplate
                 .opsForZSet()

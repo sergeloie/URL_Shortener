@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.anseranser.urlshortener.dto.link.LinkCreateDto;
 import ru.anseranser.urlshortener.dto.link.LinkDto;
+import ru.anseranser.urlshortener.dto.link.LinkScoreDto;
 import ru.anseranser.urlshortener.mapper.LinkMapper;
 import ru.anseranser.urlshortener.model.Link;
 import ru.anseranser.urlshortener.repository.LinkRepository;
@@ -42,37 +43,6 @@ public class LinkResource {
 
     private final ObjectMapper objectMapper;
 
-    @GetMapping
-    public Page<Link> getList(@ParameterObject Pageable pageable) {
-        return linkRepository.findAll(pageable);
-    }
-
-    @GetMapping("/{id}")
-    public Link getOne(@PathVariable Long id) {
-        Optional<Link> linkOptional = linkRepository.findById(id);
-        return linkOptional.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id)));
-    }
-
-    @GetMapping("/by-ids")
-    public List<Link> getMany(@RequestParam List<Long> ids) {
-        return linkRepository.findAllById(ids);
-    }
-
-    @DeleteMapping("/{id}")
-    public Link delete(@PathVariable Long id) {
-        Link link = linkRepository.findById(id).orElse(null);
-        if (link != null) {
-            linkRepository.delete(link);
-        }
-        return link;
-    }
-
-    @DeleteMapping
-    public void deleteMany(@RequestParam List<Long> ids) {
-        linkRepository.deleteAllById(ids);
-    }
-
     @PostMapping("/generate")
     public LinkDto create(@RequestBody @Valid LinkCreateDto linkCreateDto) {
         return linkService.create(linkCreateDto);
@@ -81,6 +51,16 @@ public class LinkResource {
     @GetMapping("/l/{shortlink}")
     public RedirectView redirect(@PathVariable String shortlink) {
         return new RedirectView(linkService.redirect(shortlink));
+    }
+
+    @GetMapping("/stats/{shortlink}")
+    public LinkScoreDto getScore(@PathVariable String shortlink) {
+        return linkService.getLinkFromTop(shortlink);
+    }
+
+    @GetMapping("/stats")
+    public List<LinkScoreDto> getScores(@RequestParam(defaultValue = "1") long page, @RequestParam(defaultValue = "100") long count) {
+        return linkService.getLinksFromTop(page, count);
     }
 
 

@@ -23,13 +23,9 @@ public class LinkService {
     @Value("${short.link.size}")
     private int shortLinkSize;
 
-    @Value("${short.link.cache.ttl.ms}")
-    private int shortLinkCacheTtlMs;
-
     private final RandomStringGenerator randomStringGenerator;
     private final LinkRepository linkRepository;
     private final LinkMapper linkMapper;
-    private final StringRedisTemplate stringRedisTemplate;
     private final RedisService redisService;
 
     public LinkDto create(LinkCreateDto linkCreateDto) {
@@ -44,7 +40,7 @@ public class LinkService {
     }
 
     public String redirect(String shortLink) {
-        String sourceLink = stringRedisTemplate.opsForValue().get(shortLink);
+        String sourceLink = redisService.getLinkFromCash(shortLink);
         if (sourceLink != null) {
             redisService.incrementShortLinkRating(shortLink);
             return sourceLink;
